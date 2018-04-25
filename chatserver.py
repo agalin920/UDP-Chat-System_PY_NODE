@@ -10,7 +10,8 @@ def run():
 
 	people={}
 	while 1:
-		data,addr=serv.recvfrom(65536) #buffer size
+		#data,addr=serv.recvfrom(65536)
+		data,addr=serv.recvfrom(65536)
 		if addr[0] not in people.keys():
 			if data not in people.values():
 				people[addr[0]] = data
@@ -21,6 +22,8 @@ def run():
 		if data != '':
 			print addr,": ",data
 			for i in people:
+				#(data ,(destinatinoAddress, port)
+				#Random port because client not handling incoming data properly
 				serv.sendto(people[addr[0]]+": "+data,(i,6668))
 	serv.close()
 if __name__ == "__main__":
