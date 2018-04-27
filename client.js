@@ -17,19 +17,25 @@ client.on('error', (err) => {
 });
 
 client.on('message', (msg, rinfo) => {
-  let messageObject = JSON.parse(msg.toString());
-  if(messageObject.header.type === 'close') {
-    console.log(Buffer.from(messageObject.body.message).toString());
-    process.exit();
-  } else if(messageObject.header.type === 'Sending') {
-    console.log(Buffer.from(messageObject.body.message).toString());
-  } else {
-    console.log('unknown message');
+  let js = msg.toString('utf8');
+  let json = JSON.parse(js);
+
+  if(json.body.sender){
+    if(json.body.sender != user){
+      process.stdout.clearLine();  
+      process.stdout.cursorTo(0); 
+      console.log(json.body.sender+":"+json.body.message);
+      process.stdout.write('you: ');
+    }
   }
+  
+  
+  
 });
 
 client.on('listening', () => {
   var address = client.address();
+  process.stdout.write('you: ');
 });
 
 
@@ -45,9 +51,12 @@ rl.question('Please enter a username ', (answer) => {
       }
   let message = new Buffer(JSON.stringify(msg));
   client.send(message, 0, message.length, SERVER_PORT, SERVER_HOST);
+  //process.stdout.write('you: ');
 });
 
+
 rl.on('line', (input) => {
+  process.stdout.write('you: ');
   let msg = {
         'header': {
           'type': 'Sending'
@@ -58,8 +67,6 @@ rl.on('line', (input) => {
         }
       }
   let message = JSON.stringify(msg);
-  console.log(message);
   client.send(message, 0, message.length, SERVER_PORT, SERVER_HOST);
-  console.log(`you: ${input}`);
 });
 
