@@ -1,2 +1,2 @@
-# UDP-Chat-System_PY_NODE
+# udp-chat-system
 A single user chat system that uses a UDP conection
